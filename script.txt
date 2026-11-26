@@ -1,0 +1,49 @@
+// ---------- Graph + algorithms (same sample graph as the Python project) ----------
+const N={A:[50,150],B:[180,50],C:[180,250],D:[360,50],E:[470,200]};      // SVG positions
+const X={A:[0,0],B:[2,1],C:[2,0],D:[7,1],E:[9,1]};                        // km coordinates for the A* heuristic
+const R=[['A','B',4],['A','C',2],['B','C',1],['B','D',5],['C','D',8],['C','E',10],['D','E',2]];
+const adj={};Object.keys(N).forEach(k=>adj[k]=[]);R.forEach(([a,b,w])=>{adj[a].push([b,w]);adj[b].push([a,w])});
+const h=(a,b)=>Math.hypot(X[a][0]-X[b][0],X[a][1]-X[b][1]);
+class PQ{constructor(){this.a=[]}get size(){return this.a.length}
+ push(p,v){const a=this.a;a.push([p,v]);let i=a.length-1;while(i&&a[i][0]<a[(i-1)>>1][0]){const j=(i-1)>>1;[a[i],a[j]]=[a[j],a[i]];i=j}}
+ pop(){const a=this.a,t=a[0],l=a.pop();if(a.length){a[0]=l;let i=0;for(;;){let c=2*i+1;if(c+1<a.length&&a[c+1][0]<a[c][0])c++;if(c>=a.length||a[c][0]>=a[i][0])break;[a[i],a[c]]=[a[c],a[i]];i=c}}return t}}
+function solve(s,d,star){const g={},prev={},done=new Set(),order=[],q=new PQ();Object.keys(N).forEach(k=>g[k]=Infinity);g[s]=0;q.push(star?h(s,d):0,s);
+ while(q.size){const[,u]=q.pop();if(done.has(u))continue;done.add(u);order.push(u);if(u===d)break;
+  for(const[v,w]of adj[u]){const n=g[u]+w;if(n<g[v]){g[v]=n;prev[v]=u;q.push(n+(star?h(v,d):0),v)}}}
+ const path=[];if(g[d]<Infinity)for(let n=d;n;n=prev[n])path.unshift(n);return{path,total:g[d],order}}
+//DOM
+// ---------- Page routing ----------
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+function route(){const id=($$('.page').some(p=>'#'+p.id===location.hash)?location.hash:'#home').slice(1);
+ $$('.page').forEach(p=>p.classList.toggle('on',p.id===id));$$('nav a').forEach(a=>a.classList.toggle('on',a.hash==='#'+id));scrollTo(0,0)}
+addEventListener('hashchange',route);route();
+// ---------- Lessons ----------
+const L=[['🕸️','Basics','Graph representation','Cities are vertices, roads are weighted edges.','The map is stored as an adjacency list: every city keeps a list of its neighbours and the distance to each. Roads are two-way, so each road is stored twice.'],
+['📍','Algorithm','Dijkstra’s Algorithm','Finds the shortest distance from the source.','Always expands the unvisited city with the smallest known distance from the source. When the destination is removed from the queue, its distance is final. Needs non-negative weights.'],
+['⭐','Algorithm','A* Algorithm','Adds a heuristic to guide the search.','Chooses the next city by g + h, where g is the distance travelled and h is the straight-line estimate to the destination. Because h never over-estimates, the route is still optimal.'],
+['📚','Data structure','Priority queue','Picks the next best node quickly.','A binary min-heap returns the node with the lowest priority in O(log V). Dijkstra uses distance as priority; A* uses distance plus heuristic.'],
+['🧭','Method','Path reconstruction','Rebuilds the route from previous-node links.','Each time a shorter distance is found, the city remembers where it came from. Walking back from the destination to the source and reversing gives the route.'],
+['⏱️','Analysis','Time complexity','How fast does it run?','With a binary heap, Dijkstra runs in O((V + E) log V). A* has the same worst case but usually explores fewer nodes when the heuristic is good.']];
+$('#lessons').innerHTML=L.map((l,i)=>`<div class="card lesson"><div class="ico">${l[0]}</div><span class="tag">${l[1]}</span><h3>${l[2]}</h3><p>${l[3]}</p><button class="btn s" data-i="${i}">Open lesson</button></div>`).join('');
+$('#lessons').onclick=e=>{const i=e.target.dataset.i;if(i===undefined)return;$('#dt').textContent=L[i][2];$('#dp').textContent=L[i][4];$('#dlg').showModal()};
+$('#dc').onclick=()=>$('#dlg').close();
+// ---------- Route finder ----------
+const keys=Object.keys(N);['#src','#dst'].forEach((s,i)=>{$(s).innerHTML=keys.map(k=>`<option ${k===(i?'E':'A')?'selected':''}>${k}</option>`).join('')});
+function run(){const s=$('#src').value,d=$('#dst').value,res=[['Dijkstra’s Algorithm',solve(s,d,false)],['A* Algorithm',solve(s,d,true)]],on=new Set();
+ const p=res[0][1].path;p.forEach((n,i)=>i&&on.add([p[i-1],n].sort().join('')));
+ $('#map').innerHTML=R.map(([a,b])=>`<line class="e ${on.has(a+b)?'on':''}" x1="${N[a][0]}" y1="${N[a][1]}" x2="${N[b][0]}" y2="${N[b][1]}"/>`).join('')
+ +R.map(([a,b,w])=>`<rect class="w" x="${(N[a][0]+N[b][0])/2-15}" y="${(N[a][1]+N[b][1])/2-13}" width="30" height="26" rx="8"/><text class="wt" x="${(N[a][0]+N[b][0])/2}" y="${(N[a][1]+N[b][1])/2}">${w}</text>`).join('')
+ +keys.map(k=>`<circle class="n ${k===s||k===d?'end':''}" cx="${N[k][0]}" cy="${N[k][1]}" r="22"/><text class="nt" x="${N[k][0]}" y="${N[k][1]}">${k}</text>`).join('');
+ $('#out').innerHTML=res.map(([t,r])=>`<div class="card"><span class="tag">${t}</span><div class="route">${r.path.length?r.path.join(' → '):'No route found'}</div><div class="row"><span>Distance: <b>${r.path.length?r.total+' km':'–'}</b></span><span>Nodes explored: <b>${r.order.length}</b> (${r.order.join(', ')})</span></div></div>`).join('')}
+['#go','#src','#dst'].forEach(s=>$(s).onclick=s==='#go'?run:null);$('#src').onchange=$('#dst').onchange=run;run();
+// ---------- Quiz ----------
+const Q=[['Which data structure picks the next node in Dijkstra’s algorithm?',['Stack','Priority queue','Linked list','Hash set'],1],
+['A* chooses the next node using…',['g only','h only','g + h','a random node'],2],
+['Dijkstra’s algorithm needs edge weights that are…',['Non-negative','Negative','All equal','Fractions only'],0],
+['Dijkstra’s time complexity with a binary heap is…',['O(V + E)','O((V + E) log V)','O(V³)','O(log V)'],1],
+['In the sample graph, the shortest route from A to E is…',['A → C → E (12 km)','A → B → D → E (11 km)','A → C → B → D → E (10 km)','A → B → C → E (15 km)'],2]];
+let qi=0,sc=0;
+function ask(){const b=$('#qbox');if(qi>=Q.length){b.innerHTML=`<h2>Your score: ${sc} / ${Q.length}</h2><p class="lead">${sc>=4?'Great work!':'Review the Algorithms page and try again.'}</p><button class="btn" id="rs">Restart</button>`;$('#rs').onclick=()=>{qi=sc=0;ask()};return}
+ const q=Q[qi];b.innerHTML=`<span class="tag">Question ${qi+1} of ${Q.length}</span><h3>${q[0]}</h3>`+q[1].map((o,i)=>`<button class="opt" data-i="${i}">${o}</button>`).join('')+'<div id="nx"></div>';
+ b.querySelectorAll('.opt').forEach(o=>o.onclick=()=>{const i=+o.dataset.i;if(i===q[2])sc++;b.querySelectorAll('.opt').forEach((x,j)=>{x.disabled=true;x.classList.add(j===q[2]?'ok':j===i?'no':'x')});$('#nx').innerHTML='<button class="btn" id="nb">'+(qi+1<Q.length?'Next question':'See score')+'</button>';$('#nb').onclick=()=>{qi++;ask()}})}
+ask();

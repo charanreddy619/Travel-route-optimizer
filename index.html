@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Travel Route Optimizer | Shortest Path Learning</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<header><a class="brand" href="#home"><span class="logo">TR</span>Travel Route Optimizer</a>
+<nav><a href="#home">Home</a><a href="#algorithms">Algorithms</a><a href="#finder">Route Finder</a><a href="#quiz">Quiz</a><a href="#about">About</a></nav></header>
+<main>
+<section id="home" class="page">
+ <div class="hero">
+  <div><p class="eyebrow">Graphs · Dijkstra · A*</p>
+  <h1>Find the shortest route, <span>step by step.</span></h1>
+  <p class="lead">A Design &amp; Analysis of Algorithms project that models cities as nodes and roads as weighted edges, then finds the best path with Dijkstra’s and A*.</p>
+  <a class="btn" href="#finder">Try the route finder</a></div>
+  <div class="card side"><div class="ico">🗺️</div><b class="big">10 km</b><h3>Sample route A → E</h3><p>A → C → B → D → E, found by both algorithms using a priority queue.</p></div>
+ </div>
+ <p class="eyebrow">Your project space</p><h2>What would you like to do?</h2>
+ <div class="grid four">
+  <a class="card tile" href="#algorithms"><div class="ico">📘</div><h3>Algorithms</h3><p>Learn how the route is found.</p></a>
+  <a class="card tile" href="#finder"><div class="ico">📍</div><h3>Route finder</h3><p>Pick two cities and run both algorithms.</p></a>
+  <a class="card tile" href="#quiz"><div class="ico">⭐</div><h3>Practice quiz</h3><p>Test what you have learned.</p></a>
+  <a class="card tile" href="#about"><div class="ico">👥</div><h3>About project</h3><p>Objectives, team and faculty.</p></a>
+ </div>
+</section>
+<section id="algorithms" class="page"><h1>Algorithms</h1><p class="lead">Choose a topic to see how the Travel Route Optimizer works.</p><div class="grid" id="lessons"></div></section>
+<section id="finder" class="page"><h1>Route Finder</h1><p class="lead">Choose a source and destination. Both algorithms run on the sample graph (distances in km).</p>
+ <div class="card ctl"><label>Source <select id="src"></select></label><label>Destination <select id="dst"></select></label><button class="btn" id="go">Find route</button></div>
+ <div class="grid two"><div class="card"><svg id="map" viewBox="0 0 520 300" role="img" aria-label="Sample road graph"></svg><p class="legend"><i class="g"></i> shortest path &nbsp; <i class="o"></i> source / destination</p></div><div id="out"></div></div>
+</section>
+<section id="quiz" class="page"><h1>Practice quiz</h1><div class="card" id="qbox"></div></section>
+<section id="about" class="page"><h1>About the project</h1>
+ <div class="grid two"><div class="card"><h3>Objectives</h3><ul><li>Find the shortest route between locations</li><li>Represent cities and roads as a weighted graph</li><li>Implement Dijkstra’s Algorithm</li><li>Apply A* with a priority queue</li><li>Analyse shortest-path performance</li></ul></div>
+ <div class="card"><h3>Team</h3><ul><li>Priyanshu (1/24/SET/BCS/243)</li><li>Charan (1/24/SET/BCS/244)</li><li>Rakesh (1/24/SET/BCS/242)</li><li>Aditya (1/24/SET/BCS/226)</li></ul>
+ <h3>Faculty</h3><p>Dr. Nitasha Soni<br>Department of Computer Science and Engineering<br>Manav Rachna International Institute of Research and Studies</p>
+ <p class="muted">Design &amp; Analysis of Algorithm (5.0CE100COIH) · 2026–27, 5th Semester</p></div></div>
+</section>
+</main>
+<footer><b>Travel Route Optimizer</b><span>Project Based Learning · Shortest paths made simple.</span></footer>
+<dialog id="dlg"><h3 id="dt"></h3><p id="dp"></p><button class="btn" id="dc">Close</button></dialog>
+<script src="script.js"></script></body></html>

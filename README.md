@@ -1,2 +1,6 @@
-# Travel-route-optimizer
-Travel Route Optimizer is a smart navigation system that helps users find the shortest and fastest routes between locations using pathfinding algorithms. It compares different routes based on distance and estimated travel time and suggests the most efficient path to save time and transportation costs."
+# Travel Route Optimizer - Website
+Static website (HTML + CSS + JavaScript). No installation needed.
+
+Open `index.html` in a browser, or in VS Code right-click `index.html` -> Open with Live Server.
+
+Pages: Home, Algorithms (6 lessons), Route Finder (Dijkstra + A* on the sample graph), Quiz (5 questions), About.
